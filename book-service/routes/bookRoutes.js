@@ -78,4 +78,28 @@ router.delete("/:id", authMiddleware, async (req, res) => {
   }
 });
 
+// Internal working: Update book availability
+
+router.patch("/availability/:id", authMiddleware, async (req, res) => {
+  try {
+    const { change } = req.body; // +1 or -1 (increase or decrease)
+    const book = await Book.findByPk(req.params.id);
+
+    if (!book) {
+      return res.status(404).json({ message: "Book not found" });
+    }
+
+    if (book.available + change < 0) {
+      return res.status(400).json({ message: "No books available" });
+    }
+
+    book.available += change;
+    await book.save();
+
+    res.json(book);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 export default router;

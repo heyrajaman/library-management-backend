@@ -13,7 +13,7 @@ dotenv.config({ path: path.resolve(__dirname, "../.env") });
 const app = express();
 app.use(express.json());
 
-// ---------- ROUTES ----------
+//  ROUTES
 
 // Auth Service
 app.use(
@@ -55,11 +55,18 @@ app.use(
   })
 );
 
+//Reporting
+app.use(
+  "/api/reports",
+  proxy("http://localhost:4006", {
+    proxyReqPathResolver: (req) => `/reports${req.url}`,
+  })
+);
+
 // Health check
 app.get("/", (req, res) => {
   res.send("API Gateway running");
 });
-
 app.listen(4000, () => {
   console.log("API Gateway running on port 4000");
 });

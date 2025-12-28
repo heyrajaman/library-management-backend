@@ -10,6 +10,18 @@ router.post("/issue", authMiddleware, async (req, res) => {
   try {
     const { memberId, bookId } = req.body;
 
+    //Reduce book avaliability
+    await axios.patch(
+      "http://localhost:4000/api/books/availability/" + bookId,
+      { change: -1 },
+      {
+        headers: {
+          Authorization: req.headers.authorization,
+        },
+      }
+    );
+
+    //create transaction
     if (!memberId || !bookId) {
       return res.status(400).json({ message: "memberId and bookId required" });
     }
@@ -19,7 +31,7 @@ router.post("/issue", authMiddleware, async (req, res) => {
 
     const issueDate = new Date();
     const dueDate = new Date();
-    dueDate.setDate(issueDate.getDate() + 7); // 7 days loan
+    dueDate.setDate(issueDate.getDate() + 7); // 7 days
 
     const transaction = await Transaction.create({
       memberId,
@@ -50,6 +62,18 @@ router.post("/return/:id", authMiddleware, async (req, res) => {
       return res.status(400).json({ message: "Book already returned" });
     }
 
+    //Increase book avaliability
+    await axios.patch(
+      "http://localhost:4003/books/availability/" + transaction.bookId,
+      { change: +1 },
+      {
+        headers: {
+          Authorization: req.headers.authorization,
+        },
+      }
+    );
+
+    //Update transaction status
     transaction.status = "RETURNED";
     transaction.returnDate = new Date();
 
