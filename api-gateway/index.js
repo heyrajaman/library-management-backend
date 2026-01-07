@@ -13,6 +13,17 @@ dotenv.config({ path: path.resolve(__dirname, "../.env") });
 const app = express();
 app.use(express.json());
 
+app.use(
+  cors({
+    origin: "http://localhost:5173", // React app URL
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
+);
+
+app.use(express.json());
+
 //  ROUTES
 
 // Auth Service

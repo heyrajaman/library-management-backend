@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "node auth-service/index.js",
-    "dev": "nodemon /api-gateway/index.js"
+    "dev": "nodemon api-gateway/index.js"
   },
   "keywords": [],
   "author": "",
