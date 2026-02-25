@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import proxy from "express-http-proxy";
 import dotenv from "dotenv";
 import path from "path";
@@ -9,10 +10,19 @@ const __dirname = path.dirname(__filename);
 
 // load root .env
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
-
 const app = express();
-app.use(express.json());
 
+// 2. CORS Configuration add karein
+app.use(
+  cors({
+    origin: "http://localhost:5173", // Aapke React app ka URL
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
+);
+
+app.use(express.json());
 //  ROUTES
 
 // Auth Service
